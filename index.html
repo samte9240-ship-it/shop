@@ -49,7 +49,8 @@
 /* ===== 기본 설정 ===== */
 body {
   margin: 0;
-  font-family: "맑은 고딕", sans-serif;
+  font-family: "Apple SD Gothic Neo", "맑은 고딕", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  -webkit-font-smoothing: antialiased;
   color: #333333;
 
   /* 배경 사진 (당구 치는 모습) */
@@ -124,6 +125,7 @@ header {
 header h1 {
   margin: 0;
   font-size: 54px;
+  letter-spacing: 2px;
 }
 
 header p {
@@ -212,6 +214,7 @@ nav a {
 .banner h2 {
   font-size: 20px;
   margin: 0 0 7px 0;
+  letter-spacing: 0.5px;
 }
 
 .banner p {
@@ -233,6 +236,7 @@ button {
   border-radius: 8px;
   padding: 14px 30px;
   font-size: 17px;
+  transition: background-color 0.2s, transform 0.1s;
   cursor: pointer;
 }
 
@@ -253,6 +257,7 @@ button {
 .about h2 {
   font-size: 28px;
   margin: 0 0 18px 0;
+  letter-spacing: 1px;
 }
 
 /* 소개 글 - 가운데로 모아 읽기 편하게 */
@@ -273,10 +278,11 @@ button {
 }
 
 .point {
-  background-color: rgba(252, 234, 241, 0.75);
-  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.92);
+  border-radius: 14px;
   width: 220px;
   padding: 22px 18px;
+  box-shadow: 0 2px 12px rgba(40, 20, 30, 0.08);
 }
 
 .point-title {
@@ -321,12 +327,27 @@ button {
 }
 
 .card {
-  background-color: rgba(255, 255, 255, 0.90);  /* 흰색 - 상품 글씨는 또렷하게 */
-  border: 2px solid #F5D5E0;
-  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.97);
+  border: none;
+  border-radius: 14px;
   width: 240px;
   padding: 25px;
   position: relative;   /* 베스트 배지를 카드 안에 고정하기 위해 필요 */
+  box-shadow: 0 2px 14px rgba(40, 20, 30, 0.10);   /* 테두리 대신 은은한 그림자 */
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* 마우스를 올리면 카드가 살짝 떠오릅니다 */
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(40, 20, 30, 0.16);
+}
+
+/* 카드 안 장바구니 버튼 - 작고 단정하게 */
+.card > button {
+  font-size: 13px;
+  padding: 8px 16px;
+  border-radius: 6px;
 }
 
 /* 배지 (사진 왼쪽 위에 붙는 딱지) - 모양은 공통, 색만 아래에서 정합니다 */
@@ -392,7 +413,7 @@ button {
 
 /* ===== 맨 아래: 연락처 ===== */
 footer {
-  background-color: rgba(127, 42, 120, 0.80);   /* 보라색 - 살짝 비침 */
+  background-color: rgba(30, 42, 60, 0.88);   /* 짙은 남색 - 차분하게 */
   color: #FFFFFF;
   text-align: center;
   padding: 40px 20px 30px 20px;
