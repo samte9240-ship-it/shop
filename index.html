@@ -70,16 +70,24 @@ body {
   padding: 12px 25px;
 }
 
-/* 돋보기 버튼 - 눌러도 검색됩니다 */
+/* 돋보기 버튼 - 눌러서 검색합니다 */
 .search-icon {
-  background-color: transparent;
-  border: none;
+  width: 38px;
+  height: 38px;
   padding: 0;
-  margin-right: 6px;
+  margin-left: 6px;
+  border: none;
+  border-radius: 50%;
+  background-color: #E2789C;
   font-size: 17px;
   line-height: 1;
   vertical-align: middle;
   cursor: pointer;
+}
+
+/* 마우스를 올리면 진해집니다 */
+.search-icon:hover {
+  background-color: #C85F84;
 }
 
 #search-input {
@@ -429,8 +437,10 @@ footer {
 
 <!-- 맨 위 검색창 -->
 <div class="search-bar">
+  <input type="text" id="search-input" placeholder="상품 이름 검색 (예: 큐대, ㅋㄷ)"
+         oninput="searchProduct(this.value)"
+         onkeydown="if (event.key === 'Enter') { doSearch(); }">
   <button class="search-icon" onclick="doSearch()" title="검색">🔍</button>
-  <input type="text" id="search-input" oninput="searchProduct(this.value)" placeholder="상품 이름 검색 (예: 큐대)">
 </div>
 
 <!-- 쇼핑몰 이름 -->
