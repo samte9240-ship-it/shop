@@ -82,6 +82,39 @@ header p {
   font-size: 16px;
 }
 
+/* 찜한 개수 (맨 위) */
+.heart-total {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  background-color: rgba(255, 255, 255, 0.25);
+  font-size: 15px;
+}
+
+/* 찜하기 하트 버튼 (사진 오른쪽 위) */
+.heart {
+  position: absolute;
+  top: 33px;
+  right: 33px;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 50%;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #999999;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* 눌린 하트 - 빨갛게 진해집니다 */
+.heart.on {
+  background-color: #E01B24;
+  color: #FFFFFF;
+}
+
 /* ===== 메뉴 4개 ===== */
 nav {
   background-color: rgba(200, 95, 132, 0.62);   /* 진한 분홍 - 살짝 비침 */
@@ -357,6 +390,7 @@ footer {
 <header>
   <h1>당린이</h1>
   <p>즐거운 레포츠 생활, 당린이에서 시작하세요</p>
+  <div class="heart-total">♥ 찜한 상품 <span id="heart-count">0</span>개</div>
 </header>
 
 <!-- 메뉴 4개 -->
@@ -394,6 +428,7 @@ footer {
   <div class="card-box">
 
     <div class="card" data-category="큐대">
+      <button class="heart" onclick="toggleHeart(this)">♡</button>
       <img class="photo" src="https://images.pexels.com/photos/6253690/pexels-photo-6253690.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="접이식 휴대용 큐대">
       <div class="name">접이식 휴대용 큐대</div>
       <div class="old-price">129,000원</div>
@@ -402,6 +437,7 @@ footer {
     </div>
 
     <div class="card" data-category="가방">
+      <button class="heart" onclick="toggleHeart(this)">♡</button>
       <img class="photo" src="https://images.pexels.com/photos/6253683/pexels-photo-6253683.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="초경량 큐 케이스">
       <div class="name">초경량 큐 케이스</div>
       <div class="old-price">59,000원</div>
@@ -410,6 +446,7 @@ footer {
     </div>
 
     <div class="card" data-category="소모품">
+      <button class="heart" onclick="toggleHeart(this)">♡</button>
       <img class="photo" src="https://images.pexels.com/photos/7403781/pexels-photo-7403781.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="초크 팁 관리 세트">
       <div class="name">초크 + 팁 관리 세트</div>
       <div class="old-price">19,000원</div>
@@ -419,6 +456,7 @@ footer {
 
     <div class="card" data-category="큐대">
       <div class="badge badge-red">베스트1번</div>
+      <button class="heart" onclick="toggleHeart(this)">♡</button>
       <img class="photo" src="https://images.pexels.com/photos/7403773/pexels-photo-7403773.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="당구큐 12쪽 상대">
       <div class="name">당구큐 12쪽 상대</div>
       <div class="old-price">320,000원</div>
@@ -428,6 +466,7 @@ footer {
 
     <div class="card" data-category="소품">
       <div class="badge badge-red">베스트2번</div>
+      <button class="heart" onclick="toggleHeart(this)">♡</button>
       <img class="photo" src="https://images.pexels.com/photos/6503588/pexels-photo-6503588.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="고리나 당구 장갑">
       <div class="name">고리나 당구 장갑 (태극무늬)</div>
       <div class="old-price">15,000원</div>
@@ -437,6 +476,7 @@ footer {
 
     <div class="card" data-category="가방">
       <div class="badge badge-blue">최저가</div>
+      <button class="heart" onclick="toggleHeart(this)">♡</button>
       <img class="photo" src="https://images.pexels.com/photos/17358330/pexels-photo-17358330.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="제이드 당구큐 가방">
       <div class="name">제이드 당구큐 가방</div>
       <div class="old-price">250,000원</div>
@@ -445,6 +485,7 @@ footer {
     </div>
 
     <div class="card" data-category="소모품">
+      <button class="heart" onclick="toggleHeart(this)">♡</button>
       <img class="photo" src="https://upload.wikimedia.org/wikipedia/commons/8/87/Billiard_chalk_20050724_001.jpg" alt="마스터 초크 블루 12개입">
       <div class="name">마스터 초크 (블루) 12개입</div>
       <div class="old-price">12,000원</div>
@@ -453,6 +494,7 @@ footer {
     </div>
 
     <div class="card" data-category="소모품">
+      <button class="heart" onclick="toggleHeart(this)">♡</button>
       <img class="photo" src="https://images.pexels.com/photos/6253688/pexels-photo-6253688.jpeg?auto=compress\&cs=tinysrgb\&w=400\&h=300\&fit=crop" alt="카무이 큐팁 미디엄">
       <div class="name">카무이 큐팁 (미디엄)</div>
       <div class="old-price">25,000원</div>
@@ -461,6 +503,7 @@ footer {
     </div>
 
     <div class="card" data-category="소모품">
+      <button class="heart" onclick="toggleHeart(this)">♡</button>
       <img class="photo" src="https://images.pexels.com/photos/13608133/pexels-photo-13608133.jpeg?auto=compress\&cs=tinysrgb\&w=400\&h=300\&fit=crop" alt="큐 상대 세척제 왁스 세트">
       <div class="name">큐 상대 세척제 + 왁스 세트</div>
       <div class="old-price">22,000원</div>
@@ -469,6 +512,7 @@ footer {
     </div>
 
     <div class="card" data-category="소모품">
+      <button class="heart" onclick="toggleHeart(this)">♡</button>
       <img class="photo" src="https://images.pexels.com/photos/7403820/pexels-photo-7403820.jpeg?auto=compress\&cs=tinysrgb\&w=400\&h=300\&fit=crop" alt="팁 정리기 타페">
       <div class="name">팁 정리기 (타페)</div>
       <div class="old-price">14,000원</div>
@@ -477,6 +521,7 @@ footer {
     </div>
 
     <div class="card" data-category="소모품">
+      <button class="heart" onclick="toggleHeart(this)">♡</button>
       <img class="photo" src="https://images.pexels.com/photos/8872503/pexels-photo-8872503.jpeg?auto=compress\&cs=tinysrgb\&w=400\&h=300\&fit=crop" alt="큐 그립 테이프">
       <div class="name">큐 그립 테이프 (미끄럼 방지)</div>
       <div class="old-price">9,000원</div>
@@ -485,6 +530,7 @@ footer {
     </div>
 
     <div class="card" data-category="소모품">
+      <button class="heart" onclick="toggleHeart(this)">♡</button>
       <img class="photo" src="https://images.pexels.com/photos/6253987/pexels-photo-6253987.jpeg?auto=compress\&cs=tinysrgb\&w=400\&h=300\&fit=crop" alt="다이아몬드 사포 1000방">
       <div class="name">다이아몬드 사포 (1000방)</div>
       <div class="old-price">7,000원</div>
@@ -608,6 +654,28 @@ function showCategory(category, clickedButton) {
     allButtons[i].classList.remove("on");
   }
   clickedButton.classList.add("on");
+}
+
+// 찜한 상품 개수를 세는 통입니다.
+var heartCount = 0;
+
+// 하트를 누르면 켜지고, 다시 누르면 꺼집니다.
+function toggleHeart(button) {
+
+  if (button.classList.contains("on")) {
+    // 이미 찜한 상태 -> 풀기
+    button.classList.remove("on");
+    button.textContent = "♡";
+    heartCount = heartCount - 1;
+  } else {
+    // 찜하기
+    button.classList.add("on");
+    button.textContent = "♥";
+    heartCount = heartCount + 1;
+  }
+
+  // 맨 위 개수를 새로 씁니다.
+  document.getElementById("heart-count").textContent = heartCount;
 }
 </script>
 
