@@ -63,6 +63,34 @@ body {
   background-repeat: no-repeat;
 }
 
+/* ===== 맨 위 검색창 ===== */
+.search-bar {
+  background-color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+  padding: 14px 20px;
+}
+
+#search-input {
+  width: 100%;
+  max-width: 440px;
+  padding: 10px 18px;
+  font-size: 15px;
+  font-family: inherit;
+  color: #333333;
+  border: 2px solid #E2789C;
+  border-radius: 20px;
+  background-color: #FFFFFF;
+}
+
+/* 검색 결과가 없을 때 나오는 안내 (평소에는 숨김) */
+.no-result {
+  display: none;
+  padding: 55px 20px;
+  font-size: 16px;
+  line-height: 1.9;
+  color: #666666;
+}
+
 /* ===== 맨 위: 쇼핑몰 이름 ===== */
 header {
   background-color: rgba(26, 115, 232, 0.62);   /* 파란색 - 뒤 사진이 살짝 비침 */
@@ -92,17 +120,17 @@ header p {
   font-size: 15px;
 }
 
-/* 찜하기 하트 버튼 (사진 오른쪽 위) */
+/* 찜하기 하트 버튼 (카드 오른쪽 아래) */
 .heart {
   position: absolute;
-  top: 33px;
-  right: 33px;
+  bottom: 25px;
+  right: 25px;
   width: 36px;
   height: 36px;
   padding: 0;
   border-radius: 50%;
   border: none;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: #F5D5E0;
   color: #999999;
   font-size: 20px;
   line-height: 1;
@@ -386,7 +414,13 @@ footer {
 
 <body>
 
-<!-- 맨 위: 쇼핑몰 이름과 한 줄 소개 -->
+<!-- 맨 위 검색창 -->
+<div class="search-bar">
+  <input type="text" id="search-input" oninput="searchProduct(this.value)"
+         placeholder="찾으시는 상품을 입력하세요 (예: 큐대, 장갑, 초크)">
+</div>
+
+<!-- 쇼핑몰 이름 -->
 <header>
   <h1>당린이</h1>
   <p>즐거운 레포츠 생활, 당린이에서 시작하세요</p>
@@ -539,6 +573,12 @@ footer {
     </div>
 
   </div>
+
+  <!-- 검색 결과가 없을 때만 보이는 안내 -->
+  <div id="no-result" class="no-result">
+    찾으시는 상품이 없습니다.<br>
+    다른 이름으로 검색해 보세요.
+  </div>
 </div>
 
 
@@ -634,20 +674,53 @@ for (var i = 0; i < cards.length; i++) {
 }
 
 // 카테고리 버튼을 누르면 그 분류 상품만 보여줍니다.
-function showCategory(category, clickedButton) {
+// 지금 고른 분류와 검색어를 기억해 둡니다.
+var nowCategory = "전체";
+var nowKeyword = "";
 
-  // 1) 카드를 하나씩 보면서, 고른 분류와 같은 것만 보이게 합니다.
+// 분류와 검색어를 함께 적용해서 보여줄 상품을 고릅니다.
+function applyFilter() {
   var allCards = document.querySelectorAll(".card");
+  var shownCount = 0;
 
   for (var i = 0; i < allCards.length; i++) {
-    if (category === "전체" || allCards[i].dataset.category === category) {
+    var name = allCards[i].querySelector(".name").textContent;
+
+    // 조건 1 - 분류가 맞는가
+    var okCategory = (nowCategory === "전체" || allCards[i].dataset.category === nowCategory);
+
+    // 조건 2 - 상품 이름에 검색어가 들어 있는가
+    var okKeyword = (nowKeyword === "" || name.indexOf(nowKeyword) !== -1);
+
+    if (okCategory && okKeyword) {
       allCards[i].style.display = "block";   // 보이기
+      shownCount = shownCount + 1;
     } else {
       allCards[i].style.display = "none";    // 숨기기
     }
   }
 
-  // 2) 버튼 색 바꾸기 - 전부 흰색으로 되돌린 뒤, 누른 것만 분홍색으로
+  // 보여줄 상품이 하나도 없으면 안내 문구를 띄웁니다.
+  var noResult = document.getElementById("no-result");
+  if (shownCount === 0) {
+    noResult.style.display = "block";
+  } else {
+    noResult.style.display = "none";
+  }
+}
+
+// 검색창에 글자를 칠 때마다 실행됩니다.
+function searchProduct(keyword) {
+  nowKeyword = keyword.trim();
+  applyFilter();
+}
+
+// 카테고리 버튼을 누르면 실행됩니다.
+function showCategory(category, clickedButton) {
+  nowCategory = category;
+  applyFilter();
+
+  // 버튼 색 바꾸기 - 전부 흰색으로 되돌린 뒤, 누른 것만 분홍색으로
   var allButtons = document.querySelectorAll(".cat-btn");
 
   for (var i = 0; i < allButtons.length; i++) {
