@@ -1,810 +1,477 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>멍냥마켓</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>당린이 - 당구 용품 쇼핑몰</title>
 
-  <style>
-    /* 공통 설정 */
-    body {
-      margin: 0;
-      font-family: "맑은 고딕", sans-serif;
-      background-color: #FFF8F0;
-      color: #4A3B32;
-    }
+<style>
+/* =========================================================
+   색상 팔레트 (이 파일에서 쓰는 색 전부)
+   색을 바꾸고 싶으면 아래에서 위치를 찾아 수정하세요.
+   =========================================================
 
-    /* 맨 위 (이름 + 소개) */
-    header {
-      background-color: #FF8A3D;
-      color: white;
-      text-align: center;
-      padding: 30px 20px;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 40px;
-    }
-    header p {
-      margin: 8px 0 0 0;
-      font-size: 19px;
-    }
+   [ 분홍색 계열 - 메인 색상 ]
 
-    /* 찜한 개수 표시 */
-    .wish-count {
-      display: inline-block;
-      background-color: rgba(255, 255, 255, 0.25);
-      border-radius: 20px;
-      padding: 7px 18px;
-      margin: 14px 0 0 0;
-      font-size: 17px;
-      font-weight: bold;
-    }
+   #E2789C   메인 분홍색 (가장 많이 쓰임)
+             -> 버튼 배경 / 카테고리 버튼
 
-    /* 메뉴 4개 */
-    nav {
-      background-color: #FFE3CC;
-      text-align: center;
-      padding: 15px;
-    }
-    nav a {
-      color: #C2551A;
-      text-decoration: none;
-      font-weight: bold;
-      margin: 0 15px;
-      font-size: 19px;
-    }
+   #C85F84   진한 분홍색
+             -> 메뉴바 배경
 
-    /* 큰 배너 (배경 사진 + 주황색 반투명 막) */
-    .banner {
-      background-image:
-        linear-gradient(rgba(180, 80, 20, 0.55), rgba(180, 80, 20, 0.55)),
-        url("https://placedog.net/1200/500?id=3");
-      background-size: cover;
-      background-position: center;
-      color: white;
-      text-align: center;
-      padding: 90px 20px;
-    }
-    .banner h2 {
-      font-size: 38px;
-      margin: 0 0 10px 0;
-    }
-    .banner p {
-      font-size: 21px;
-      margin: 0 0 25px 0;
-    }
-    .banner button {
-      background-color: #FF8A3D;
-      color: white;
-      border: none;
-      border-radius: 30px;
-      padding: 15px 40px;
-      font-size: 21px;
-      cursor: pointer;
-    }
+   #FCEAF1   아주 연한 분홍색
+             -> 큰 배너 배경
 
-    /* 검색창 */
-    .search {
-      text-align: center;
-      padding: 40px 20px 0 20px;
-    }
-    .search input {
-      width: 340px;
-      max-width: 85%;
-      padding: 13px 22px;
-      font-size: 17px;
-      border: 2px solid #FFD8B0;
-      border-radius: 25px;
-      outline: none;
-    }
-    .search input:focus {
-      border-color: #FF8A3D;
-    }
+   #F5D5E0   연한 분홍색
+             -> 상품 카드 테두리
 
-    /* 찾는 상품이 없을 때 안내 문구 */
-    .no-result {
-      display: none;
-      text-align: center;
-      font-size: 19px;
-      line-height: 1.8;
-      color: #7A675C;
-      padding: 40px 20px 60px 20px;
-    }
+   #B33D68   어두운 분홍색
+             -> 판매 가격 글자
 
-    /* 카테고리 버튼 */
-    .categories {
-      text-align: center;
-      padding: 22px 20px 0 20px;
-    }
-    .categories button {
-      background-color: white;
-      color: #C2551A;
-      border: 2px solid #FFD8B0;
-      border-radius: 25px;
-      padding: 10px 22px;
-      font-size: 17px;
-      font-weight: bold;
-      margin: 5px;
-      cursor: pointer;
-    }
-    /* 선택된 버튼 */
-    .categories button.active {
-      background-color: #2D7FF9;
-      border-color: #2D7FF9;
-      color: white;
-    }
+   [ 배경 / 기본 ]
 
-    /* 상품 카드 */
-    .products {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 25px;
-      padding: 50px 20px;
-    }
-    .card {
-      background-color: white;
-      border-radius: 20px;
-      width: 270px;
-      padding-bottom: 25px;
-      text-align: center;
-      overflow: hidden;
-      position: relative;
-      /* 카드 그림자 */
-      box-shadow: 0 8px 20px rgba(120, 70, 30, 0.18);
-    }
-    .card img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      display: block;
-    }
-    /* 찜하기 하트 버튼 */
-    .card button.heart {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      width: 40px;
-      height: 40px;
-      background-color: rgba(255, 255, 255, 0.9);
-      border: none;
-      border-radius: 50%;
-      font-size: 20px;
-      line-height: 1;
-      padding: 0;
-      cursor: pointer;
-    }
+   #FFFAFC   분홍빛 아이보리 -> 페이지 전체 배경
+   #FFFFFF   흰색       -> 상품 카드 배경 / 밝은 글자
 
-    /* BEST 배지 */
-    .badge {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      background-color: #2D7FF9;
-      color: white;
-      font-size: 14px;
-      font-weight: bold;
-      padding: 6px 13px;
-      border-radius: 15px;
-    }
+   [ 글자 ]
 
-    /* NEW 배지 (초록색) */
-    .badge.new {
-      background-color: #3EA37A;
-    }
-    /* 할인 배지 (노란색) */
-    .badge.sale {
-      background-color: #F0A020;
-    }
-    /* 할인율 (빨간색) */
-    .discount {
-      color: #FF2D2D;
-      font-weight: bold;
-      font-size: 19px;
-      margin-right: 6px;
-    }
-    .card h3 {
-      margin: 18px 0 10px 0;
-      font-size: 21px;
-    }
-    .old-price {
-      color: #999999;
-      text-decoration: line-through;
-      font-size: 17px;
-    }
-    .price {
-      color: #FF6B00;
-      font-size: 26px;
-      font-weight: bold;
-      margin-left: 8px;
-    }
-    .card button {
-      background-color: #FF8A3D;
-      color: white;
-      border: none;
-      border-radius: 20px;
-      padding: 10px 25px;
-      font-size: 17px;
-      margin-top: 15px;
-      cursor: pointer;
-    }
+   #333333   진한 회색  -> 기본 글자
+   #999999   연한 회색  -> 할인 전 가격 (줄긋기)
 
-    /* 장바구니 */
-    .cart {
-      max-width: 640px;
-      margin: 0 auto 60px auto;
-      background-color: white;
-      border-radius: 20px;
-      padding: 30px 25px;
-      box-shadow: 0 8px 20px rgba(120, 70, 30, 0.18);
-    }
-    .cart h2 {
-      font-size: 24px;
-      margin: 0 0 20px 0;
-      text-align: center;
-    }
-    /* 담은 상품 한 줄 */
-    .cart-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border-bottom: 1px solid #F1E4D8;
-      padding: 14px 0;
-    }
-    .cart-name {
-      flex: 1;
-      font-size: 17px;
-      text-align: left;
-    }
-    /* 수량 바꾸는 버튼 */
-    .cart-count button {
-      width: 32px;
-      height: 32px;
-      background-color: #FFE3CC;
-      color: #C2551A;
-      border: none;
-      border-radius: 50%;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .cart-count b {
-      display: inline-block;
-      width: 34px;
-      text-align: center;
-      font-size: 17px;
-    }
-    .cart-sum {
-      width: 95px;
-      text-align: right;
-      font-size: 17px;
-      font-weight: bold;
-      color: #FF6B00;
-    }
-    .cart-del {
-      background: none;
-      border: none;
-      color: #B9A79A;
-      font-size: 17px;
-      cursor: pointer;
-    }
-    /* 총 금액 */
-    .cart-total {
-      text-align: right;
-      font-size: 21px;
-      margin: 22px 0;
-    }
-    .cart-total span {
-      font-size: 27px;
-      font-weight: bold;
-      color: #FF6B00;
-    }
-    .order-button {
-      width: 100%;
-      background-color: #FF8A3D;
-      color: white;
-      border: none;
-      border-radius: 25px;
-      padding: 15px;
-      font-size: 19px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .cart-empty {
-      text-align: center;
-      color: #7A675C;
-      font-size: 17px;
-      padding: 15px 0;
-    }
+   [ 포인트 ]
 
-    /* 쇼핑몰 소개 */
-    .about {
-      background-color: #FFE3CC;
-      text-align: center;
-      padding: 60px 20px;
-    }
-    .about h2 {
-      font-size: 28px;
-      margin: 0 0 20px 0;
-    }
-    .about > p {
-      font-size: 18px;
-      line-height: 1.9;
-      max-width: 700px;
-      margin: 0 auto 40px auto;
-    }
-    /* 소개 항목 3개 */
-    .about-items {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-    .about-item {
-      background-color: white;
-      border-radius: 20px;
-      width: 220px;
-      padding: 25px 20px;
-    }
-    .about-emoji {
-      font-size: 45px;
-    }
-    .about-item h3 {
-      font-size: 19px;
-      margin: 12px 0 8px 0;
-    }
-    .about-item p {
-      font-size: 16px;
-      margin: 0;
-      color: #7A675C;
-    }
+   #1A73E8   파란색     -> 헤더 배경 / 최저가 배지
+   #E01B24   빨간색     -> 할인율 글자 / 베스트 배지
+   #7f2a78   보라색     -> 맨 아래 연락처 배경
 
-    /* 맨 아래 연락처 */
-    footer {
-      background-color: #4A3B32;
-      color: white;
-      text-align: center;
-      padding: 30px 20px;
-      font-size: 17px;
-      line-height: 1.8;
-    }
-  </style>
+   ========================================================= */
+
+/* ===== 기본 설정 ===== */
+body {
+  margin: 0;
+  font-family: "맑은 고딕", sans-serif;
+  color: #333333;
+
+  /* 배경 사진 (당구 치는 모습) */
+  background-color: #FFFAFC;
+  background-image:
+    linear-gradient(rgba(255, 250, 252, 0.60), rgba(255, 250, 252, 0.60)),
+    url("https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/%27t_Kraaienest_DSCF4417.JPG/1280px-%27t_Kraaienest_DSCF4417.JPG");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;   /* 스크롤해도 배경은 제자리 */
+  background-repeat: no-repeat;
+}
+
+/* ===== 맨 위: 쇼핑몰 이름 ===== */
+header {
+  background-color: rgba(26, 115, 232, 0.62);   /* 파란색 - 뒤 사진이 살짝 비침 */
+  color: #FFFFFF;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);   /* 사진 위에서도 흰 글씨가 읽히게 */
+  padding: 30px 20px;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 40px;
+}
+
+header p {
+  margin: 10px 0 0 0;
+  font-size: 16px;
+}
+
+/* ===== 메뉴 4개 ===== */
+nav {
+  background-color: rgba(200, 95, 132, 0.62);   /* 진한 분홍 - 살짝 비침 */
+  text-align: center;
+  padding: 15px;
+}
+
+nav a {
+  color: #FFFFFF;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);   /* 사진 위에서도 흰 글씨가 읽히게 */
+  text-decoration: none;
+  font-size: 17px;
+  margin: 0 20px;
+}
+
+/* ===== 큰 배너 ===== */
+.banner {
+  background-color: rgba(252, 234, 241, 0.55);  /* 연한 분홍 - 비침 */
+  text-align: center;
+  padding: 60px 20px;
+  position: relative;   /* 장바구니 버튼을 배너 안에 고정하기 위해 필요 */
+}
+
+/* 배너 오른쪽 아래 버튼 묶음 */
+.banner-buttons {
+  position: absolute;
+  right: 25px;
+  bottom: 25px;
+}
+
+/* 두 버튼 공통 - 가운데 큰 버튼보다 작게 */
+.banner-cart,
+.banner-buy {
+  font-size: 15px;
+  padding: 10px 20px;
+  margin-left: 8px;
+}
+
+/* 즉시 구매 - 파란색으로 구분 */
+.banner-buy {
+  background-color: #1A73E8;
+}
+
+.banner h2 {
+  font-size: 32px;
+  margin: 0 0 15px 0;
+}
+
+.banner p {
+  font-size: 18px;
+  margin: 0 0 25px 0;
+}
+
+/* ===== 버튼 ===== */
+button {
+  background-color: #E2789C;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 30px;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+/* ===== 상품 카드 3개 ===== */
+.product-area {
+  text-align: center;
+  padding: 50px 20px;
+}
+
+.card-box {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 25px;
+  margin-top: 30px;
+}
+
+/* ===== 카테고리 버튼 ===== */
+.category-bar {
+  margin-top: 25px;
+}
+
+/* 안 눌린 버튼 - 흰 바탕에 분홍 테두리 */
+.cat-btn {
+  background-color: rgba(255, 255, 255, 0.62);  /* 흰색 - 살짝 비침 */
+  color: #B33D68;
+  border: 2px solid #E2789C;
+  font-size: 15px;
+  padding: 10px 22px;
+  margin: 4px;
+}
+
+/* 지금 눌린 버튼 - 분홍색으로 꽉 채움 */
+.cat-btn.on {
+  background-color: #E2789C;
+  color: #FFFFFF;
+}
+
+.card {
+  background-color: rgba(255, 255, 255, 0.90);  /* 흰색 - 상품 글씨는 또렷하게 */
+  border: 2px solid #F5D5E0;
+  border-radius: 12px;
+  width: 240px;
+  padding: 25px;
+  position: relative;   /* 베스트 배지를 카드 안에 고정하기 위해 필요 */
+}
+
+/* 배지 (사진 왼쪽 위에 붙는 딱지) - 모양은 공통, 색만 아래에서 정합니다 */
+.badge {
+  position: absolute;
+  top: 33px;
+  left: 33px;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+/* 빨간 배지 - 베스트 상품 */
+.badge-red {
+  background-color: #E01B24;
+}
+
+/* 파란 배지 - 최저가 */
+.badge-blue {
+  background-color: #1A73E8;
+}
+
+/* 상품 사진 */
+.photo {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;   /* 사진이 찌그러지지 않고 꽉 차게 */
+  border-radius: 8px;
+  background-color: #F5D5E0;  /* 사진 로딩 전에 보이는 색 */
+  display: block;
+}
+
+.name {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 15px 0 10px 0;
+}
+
+/* 할인 전 가격 (회색 + 줄긋기) */
+.old-price {
+  color: #999999;
+  text-decoration: line-through;
+  font-size: 15px;
+}
+
+/* 판매 가격 */
+.price {
+  color: #B33D68;
+  font-size: 22px;
+  font-weight: bold;
+  margin: 5px 0 20px 0;
+}
+
+/* 할인율 (가격 앞에 붙는 빨간 글씨) */
+.sale {
+  color: #E01B24;
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+/* ===== 맨 아래: 연락처 ===== */
+footer {
+  background-color: rgba(127, 42, 120, 0.80);   /* 보라색 - 살짝 비침 */
+  color: #FFFFFF;
+  text-align: center;
+  padding: 30px 20px;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+/* 배경 사진 저작자 표시 (라이선스 요구사항) */
+.credit {
+  font-size: 12px;
+  opacity: 0.75;
+  margin-top: 12px;
+}
+</style>
 </head>
 
 <body>
 
-  <!-- 맨 위 -->
-  <header>
-    <h1>🐶 멍냥마켓 🐱</h1>
-    <p>우리 아이를 위한 따뜻한 선택</p>
-    <p class="wish-count">❤️ 찜한 상품 <span id="wishNumber">0</span>개 &nbsp; 🛒 장바구니 <span id="cartNumber">0</span>개</p>
-  </header>
+<!-- 맨 위: 쇼핑몰 이름과 한 줄 소개 -->
+<header>
+  <h1>당린이</h1>
+  <p>가볍게 들고 다니는 당구 용품, 당린이에서 시작하세요</p>
+</header>
 
-  <!-- 메뉴 -->
-  <nav>
-    <a href="#">사료·간식</a>
-    <a href="#">장난감</a>
-    <a href="#">산책용품</a>
-    <a href="#">이벤트</a>
-  </nav>
+<!-- 메뉴 4개 -->
+<nav>
+  <a href="#">홈</a>
+  <a href="#">큐대</a>
+  <a href="#">당구 소품</a>
+  <a href="#">고객센터</a>
+</nav>
 
-  <!-- 배너 -->
-  <div class="banner">
-    <h2>🎁 첫 만남 선물, 30% 할인</h2>
-    <p>지금 가입하면 3,000원 쿠폰 + 무료배송</p>
-    <button onclick="showAlert('가입 쿠폰이 발급되었습니다! 🎁')">지금 가입하고 받기</button>
+<!-- 큰 배너 -->
+<div class="banner">
+  <h2>초보도 편한 휴대용 당구 용품</h2>
+  <p>무겁고 복잡한 건 그만! 가볍고 실용적인 제품만 모았습니다.</p>
+  <button onclick="showAlert()">지금 구경하기</button>
+  <div class="banner-buttons">
+    <button class="banner-cart" onclick="showAlert()">장바구니 담기</button>
+    <button class="banner-buy" onclick="showAlert()">즉시 구매</button>
+  </div>
+</div>
+
+<!-- 상품 카드 3개 -->
+<div class="product-area">
+  <h2>인기 상품</h2>
+
+  <!-- 카테고리 버튼 (누르면 그 분류 상품만 보입니다) -->
+  <div class="category-bar">
+    <button class="cat-btn on" onclick="showCategory('전체', this)">전체</button>
+    <button class="cat-btn" onclick="showCategory('큐대', this)">큐대</button>
+    <button class="cat-btn" onclick="showCategory('가방', this)">가방 · 케이스</button>
+    <button class="cat-btn" onclick="showCategory('소품', this)">소품</button>
+    <button class="cat-btn" onclick="showCategory('소모품', this)">소모품</button>
   </div>
 
-  <!-- 검색창 -->
-  <div class="search">
-    <input type="text" id="searchBox" onkeyup="searchProduct()" placeholder="🔍 상품 이름으로 검색해 보세요">
-  </div>
+  <div class="card-box">
 
-  <!-- 카테고리 버튼 -->
-  <div class="categories">
-    <button class="active" onclick="showCategory('전체', this)">전체</button>
-    <button onclick="showCategory('간식', this)">간식</button>
-    <button onclick="showCategory('장난감', this)">장난감</button>
-    <button onclick="showCategory('용품', this)">용품</button>
-  </div>
-
-  <!-- 상품 카드 12개 -->
-  <div class="products">
-
-    <div class="card" data-category="간식">
-      <button class="heart" onclick="toggleHeart(this)">🤍</button>
-      <span class="badge">BEST</span>
-      <img src="https://placedog.net/500/400?id=12" alt="수제 오리목뼈 간식">
-      <h3>수제 오리목뼈 간식</h3>
-      <span class="old-price">18,000원</span>
-      <span class="price">12,600원</span>
-      <br>
-      <button onclick="addToCart(this)">장바구니 담기</button>
+    <div class="card" data-category="큐대">
+      <img class="photo" src="https://images.pexels.com/photos/6253690/pexels-photo-6253690.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="접이식 휴대용 큐대">
+      <div class="name">접이식 휴대용 큐대</div>
+      <div class="old-price">129,000원</div>
+      <div class="price">89,000원</div>
+      <button onclick="showAlert()">장바구니</button>
     </div>
 
-    <div class="card" data-category="장난감">
-      <button class="heart" onclick="toggleHeart(this)">🤍</button>
-      <span class="badge new">NEW</span>
-      <img src="https://placedog.net/500/400?id=21" alt="삑삑이 애착 인형">
-      <h3>삑삑이 애착 인형</h3>
-      <span class="old-price">15,000원</span>
-      <span class="price">9,900원</span>
-      <br>
-      <button onclick="addToCart(this)">장바구니 담기</button>
+    <div class="card" data-category="가방">
+      <img class="photo" src="https://images.pexels.com/photos/6253683/pexels-photo-6253683.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="초경량 큐 케이스">
+      <div class="name">초경량 큐 케이스</div>
+      <div class="old-price">59,000원</div>
+      <div class="price">39,000원</div>
+      <button onclick="showAlert()">장바구니</button>
     </div>
 
-    <div class="card" data-category="용품">
-      <button class="heart" onclick="toggleHeart(this)">🤍</button>
-      <span class="badge">BEST</span>
-      <img src="https://placedog.net/500/400?id=30" alt="푹신 쿠션 하네스">
-      <h3>푹신 쿠션 하네스</h3>
-      <span class="old-price">32,000원</span>
-      <span class="price">24,900원</span>
-      <br>
-      <button onclick="addToCart(this)">장바구니 담기</button>
+    <div class="card" data-category="소모품">
+      <img class="photo" src="https://images.pexels.com/photos/7403781/pexels-photo-7403781.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="초크 팁 관리 세트">
+      <div class="name">초크 + 팁 관리 세트</div>
+      <div class="old-price">19,000원</div>
+      <div class="price">12,000원</div>
+      <button onclick="showAlert()">장바구니</button>
     </div>
 
-    <div class="card" data-category="용품">
-      <button class="heart" onclick="toggleHeart(this)">🤍</button>
-      <span class="badge sale">할인</span>
-      <img src="https://placedog.net/500/400?id=7" alt="도톰 방석 하우스">
-      <h3>도톰 방석 하우스</h3>
-      <span class="old-price">45,000원</span>
-      <span class="price">33,000원</span>
-      <br>
-      <button onclick="addToCart(this)">장바구니 담기</button>
+    <div class="card" data-category="큐대">
+      <div class="badge badge-red">베스트1번</div>
+      <img class="photo" src="https://images.pexels.com/photos/7403773/pexels-photo-7403773.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="당구큐 12쪽 상대">
+      <div class="name">당구큐 12쪽 상대</div>
+      <div class="old-price">320,000원</div>
+      <div class="price">250,000원</div>
+      <button onclick="showAlert()">장바구니</button>
     </div>
 
-    <div class="card" data-category="용품">
-      <button class="heart" onclick="toggleHeart(this)">🤍</button>
-      <span class="badge new">NEW</span>
-      <!-- 사진 출처: 위키미디어 공용 Dog sweater 1.jpg (CC0, 출처 표기 불필요) -->
-      <img src="images/knit-sweater.jpg" alt="포근 니트 겨울옷">
-      <h3>포근 니트 겨울옷</h3>
-      <span class="old-price">28,000원</span>
-      <span class="price">19,600원</span>
-      <br>
-      <button onclick="addToCart(this)">장바구니 담기</button>
+    <div class="card" data-category="소품">
+      <div class="badge badge-red">베스트2번</div>
+      <img class="photo" src="https://images.pexels.com/photos/6503588/pexels-photo-6503588.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="고리나 당구 장갑">
+      <div class="name">고리나 당구 장갑 (태극무늬)</div>
+      <div class="old-price">15,000원</div>
+      <div class="price">12,000원</div>
+      <button onclick="showAlert()">장바구니</button>
     </div>
 
-    <div class="card" data-category="용품">
-      <button class="heart" onclick="toggleHeart(this)">🤍</button>
-      <span class="badge sale">할인</span>
-      <img src="https://placedog.net/500/400?id=55" alt="스텐 자동 급수기">
-      <h3>스텐 자동 급수기</h3>
-      <span class="old-price">39,000원</span>
-      <span class="price">27,300원</span>
-      <br>
-      <button onclick="addToCart(this)">장바구니 담기</button>
-    </div>
-    <div class="card" data-category="간식">
-      <button class="heart" onclick="toggleHeart(this)">🤍</button>
-      <span class="badge new">NEW</span>
-      <img src="https://placedog.net/500/400?id=60" alt="연어 큐브 트릿">
-      <h3>연어 큐브 트릿</h3>
-      <span class="old-price">16,000원</span>
-      <span class="price">11,200원</span>
-      <br>
-      <button onclick="addToCart(this)">장바구니 담기</button>
+    <div class="card" data-category="가방">
+      <div class="badge badge-blue">최저가</div>
+      <img class="photo" src="https://images.pexels.com/photos/17358330/pexels-photo-17358330.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="제이드 당구큐 가방">
+      <div class="name">제이드 당구큐 가방</div>
+      <div class="old-price">250,000원</div>
+      <div class="price">120,000원</div>
+      <button onclick="showAlert()">장바구니</button>
     </div>
 
-    <div class="card" data-category="간식">
-      <button class="heart" onclick="toggleHeart(this)">🤍</button>
-      <span class="badge">BEST</span>
-      <img src="https://placedog.net/500/400?id=66" alt="닭가슴살 저키 스틱">
-      <h3>닭가슴살 저키 스틱</h3>
-      <span class="old-price">21,000원</span>
-      <span class="price">14,700원</span>
-      <br>
-      <button onclick="addToCart(this)">장바구니 담기</button>
+    <div class="card" data-category="소모품">
+      <img class="photo" src="https://upload.wikimedia.org/wikipedia/commons/8/87/Billiard_chalk_20050724_001.jpg" alt="마스터 초크 블루 12개입">
+      <div class="name">마스터 초크 (블루) 12개입</div>
+      <div class="old-price">12,000원</div>
+      <div class="price">8,000원</div>
+      <button onclick="showAlert()">장바구니</button>
     </div>
 
-    <div class="card" data-category="장난감">
-      <button class="heart" onclick="toggleHeart(this)">🤍</button>
-      <span class="badge sale">할인</span>
-      <img src="https://placedog.net/500/400?id=71" alt="노즈워크 코담요">
-      <h3>노즈워크 코담요</h3>
-      <span class="old-price">26,000원</span>
-      <span class="price">17,900원</span>
-      <br>
-      <button onclick="addToCart(this)">장바구니 담기</button>
+    <div class="card" data-category="소모품">
+      <img class="photo" src="https://images.pexels.com/photos/6253688/pexels-photo-6253688.jpeg?auto=compress\&cs=tinysrgb\&w=400\&h=300\&fit=crop" alt="카무이 큐팁 미디엄">
+      <div class="name">카무이 큐팁 (미디엄)</div>
+      <div class="old-price">25,000원</div>
+      <div class="price">18,000원</div>
+      <button onclick="showAlert()">장바구니</button>
     </div>
 
-    <div class="card" data-category="장난감">
-      <button class="heart" onclick="toggleHeart(this)">🤍</button>
-      <span class="badge new">NEW</span>
-      <img src="https://placedog.net/500/400?id=77" alt="터그놀이 무명 밧줄">
-      <h3>터그놀이 무명 밧줄</h3>
-      <span class="old-price">12,000원</span>
-      <span class="price">8,400원</span>
-      <br>
-      <button onclick="addToCart(this)">장바구니 담기</button>
+    <div class="card" data-category="소모품">
+      <img class="photo" src="https://images.pexels.com/photos/13608133/pexels-photo-13608133.jpeg?auto=compress\&cs=tinysrgb\&w=400\&h=300\&fit=crop" alt="큐 상대 세척제 왁스 세트">
+      <div class="name">큐 상대 세척제 + 왁스 세트</div>
+      <div class="old-price">22,000원</div>
+      <div class="price">15,000원</div>
+      <button onclick="showAlert()">장바구니</button>
     </div>
 
-    <div class="card" data-category="용품">
-      <button class="heart" onclick="toggleHeart(this)">🤍</button>
-      <span class="badge sale">할인</span>
-      <img src="https://placedog.net/500/400?id=82" alt="높이 조절 스텐 식기">
-      <h3>높이 조절 스텐 식기</h3>
-      <span class="old-price">37,000원</span>
-      <span class="price">25,900원</span>
-      <br>
-      <button onclick="addToCart(this)">장바구니 담기</button>
+    <div class="card" data-category="소모품">
+      <img class="photo" src="https://images.pexels.com/photos/7403820/pexels-photo-7403820.jpeg?auto=compress\&cs=tinysrgb\&w=400\&h=300\&fit=crop" alt="팁 정리기 타페">
+      <div class="name">팁 정리기 (타페)</div>
+      <div class="old-price">14,000원</div>
+      <div class="price">9,000원</div>
+      <button onclick="showAlert()">장바구니</button>
     </div>
 
-    <div class="card" data-category="용품">
-      <button class="heart" onclick="toggleHeart(this)">🤍</button>
-      <span class="badge">BEST</span>
-      <img src="https://placedog.net/500/400?id=90" alt="야간 산책 LED 목줄">
-      <h3>야간 산책 LED 목줄</h3>
-      <span class="old-price">24,000원</span>
-      <span class="price">16,800원</span>
-      <br>
-      <button onclick="addToCart(this)">장바구니 담기</button>
+    <div class="card" data-category="소모품">
+      <img class="photo" src="https://images.pexels.com/photos/8872503/pexels-photo-8872503.jpeg?auto=compress\&cs=tinysrgb\&w=400\&h=300\&fit=crop" alt="큐 그립 테이프">
+      <div class="name">큐 그립 테이프 (미끄럼 방지)</div>
+      <div class="old-price">9,000원</div>
+      <div class="price">6,000원</div>
+      <button onclick="showAlert()">장바구니</button>
     </div>
 
+    <div class="card" data-category="소모품">
+      <img class="photo" src="https://images.pexels.com/photos/6253987/pexels-photo-6253987.jpeg?auto=compress\&cs=tinysrgb\&w=400\&h=300\&fit=crop" alt="다이아몬드 사포 1000방">
+      <div class="name">다이아몬드 사포 (1000방)</div>
+      <div class="old-price">7,000원</div>
+      <div class="price">5,000원</div>
+      <button onclick="showAlert()">장바구니</button>
+    </div>
 
   </div>
+</div>
 
-  <!-- 찾는 상품이 없을 때 -->
-  <p class="no-result" id="noResult">
-    찾으시는 상품이 없어요 🐾<br>
-    다른 이름으로 검색해 보세요.
-  </p>
+<!-- 맨 아래: 연락처 안내 -->
+<footer>
+  <div>당린이 고객센터</div>
+  <div>전화: 1588-0000 (평일 10:00 ~ 18:00)</div>
+  <div>이메일: help@dangrini.co.kr</div>
+  <div>© 2026 당린이</div>
+  <div class="credit">배경 사진: G.Lanting / CC BY-SA 4.0 (위키미디어 공용)</div>
+</footer>
 
-  <!-- 장바구니 -->
-  <div class="cart">
-    <h2>🛒 장바구니</h2>
+<script>
+// 버튼을 누르면 알림창이 뜹니다.
+function showAlert() {
+  alert("당린이에 오신 것을 환영합니다! 곧 오픈합니다 🎱");
+}
 
-    <p class="cart-empty" id="cartEmpty">아직 담은 상품이 없어요 🐾</p>
-    <div id="cartList"></div>
+// 상품마다 할인율을 계산해서 가격 앞에 빨간 글씨로 넣습니다.
+var cards = document.querySelectorAll(".card");
 
-    <p class="cart-total">총 금액 <span id="cartTotal">0</span>원</p>
-    <button class="order-button" onclick="order()">주문하기</button>
-  </div>
+for (var i = 0; i < cards.length; i++) {
+  var oldBox = cards[i].querySelector(".old-price");
+  var newBox = cards[i].querySelector(".price");
 
-  <!-- 쇼핑몰 소개 -->
-  <div class="about">
-    <h2>🐾 멍냥마켓 이야기</h2>
-    <p>
-      멍냥마켓은 강아지와 함께 사는 보호자가 직접 써보고 고른 물건만 판매합니다.
-      매일 쓰는 물건일수록 꼼꼼하게, 우리 아이에게 줘도 마음 놓이는 것만 담았습니다.
-    </p>
+  // "129,000원" 에서 숫자만 뽑아냅니다 -> 129000
+  var oldNum = Number(oldBox.textContent.replace(/[^0-9]/g, ""));
+  var newNum = Number(newBox.textContent.replace(/[^0-9]/g, ""));
 
-    <div class="about-items">
-      <div class="about-item">
-        <div class="about-emoji">🚚</div>
-        <h3>무료배송</h3>
-        <p>3만원 이상 구매 시<br>배송비가 없습니다</p>
-      </div>
+  // 할인율 = (할인 전 가격 - 판매 가격) / 할인 전 가격 * 100
+  var percent = Math.round((oldNum - newNum) / oldNum * 100);
 
-      <div class="about-item">
-        <div class="about-emoji">🔍</div>
-        <h3>직접 써보고 선택</h3>
-        <p>사장님 강아지가<br>먼저 써본 물건만</p>
-      </div>
+  // 빨간 글씨를 만들어서 가격 맨 앞에 넣습니다.
+  var tag = document.createElement("span");
+  tag.className = "sale";
+  tag.textContent = percent + "%";
+  newBox.insertBefore(tag, newBox.firstChild);
+}
 
-      <div class="about-item">
-        <div class="about-emoji">💝</div>
-        <h3>교환·환불 안심</h3>
-        <p>받은 날부터 14일 안에<br>연락 주시면 됩니다</p>
-      </div>
-    </div>
-  </div>
+// 카테고리 버튼을 누르면 그 분류 상품만 보여줍니다.
+function showCategory(category, clickedButton) {
 
-  <!-- 맨 아래 -->
-  <footer>
-    <p>
-      멍냥마켓 고객센터 ☎ 010-4563-8957<br>
-      평일 10:00 ~ 18:00 (점심 12:00 ~ 13:00 / 주말·공휴일 휴무)
-    </p>
-  </footer>
+  // 1) 카드를 하나씩 보면서, 고른 분류와 같은 것만 보이게 합니다.
+  var allCards = document.querySelectorAll(".card");
 
-  <script>
-    // 버튼을 누르면 알림창을 띄우는 함수
-    function showAlert(message) {
-      alert(message);
+  for (var i = 0; i < allCards.length; i++) {
+    if (category === "전체" || allCards[i].dataset.category === category) {
+      allCards[i].style.display = "block";   // 보이기
+    } else {
+      allCards[i].style.display = "none";    // 숨기기
     }
-    // 지금 선택된 카테고리를 기억해두는 상자
-    var nowCategory = '전체';
+  }
 
-    // 카테고리 버튼을 누르면 실행되는 함수
-    function showCategory(name, clickedButton) {
-      nowCategory = name;
+  // 2) 버튼 색 바꾸기 - 전부 흰색으로 되돌린 뒤, 누른 것만 분홍색으로
+  var allButtons = document.querySelectorAll(".cat-btn");
 
-      // 누른 버튼에만 파란색 표시하기
-      var buttons = document.querySelectorAll('.categories button');
-      for (var j = 0; j < buttons.length; j++) {
-        buttons[j].classList.remove('active');
-      }
-      clickedButton.classList.add('active');
-
-      showProducts();
-    }
-
-    // 검색창에 글자를 칠 때마다 실행되는 함수
-    function searchProduct() {
-      showProducts();
-    }
-
-    // 카테고리와 검색어를 함께 확인해서 상품을 보여주는 함수
-    function showProducts() {
-      var word = document.getElementById('searchBox').value;
-      var cards = document.querySelectorAll('.card');
-      var shown = 0;
-
-      for (var i = 0; i < cards.length; i++) {
-        var name = cards[i].querySelector('h3').textContent;
-
-        // 카테고리가 맞는지 확인
-        var sameCategory = (nowCategory === '전체' || cards[i].dataset.category === nowCategory);
-        // 상품 이름에 검색어가 들어있는지 확인
-        var hasWord = (name.indexOf(word) !== -1);
-
-        if (sameCategory && hasWord) {
-          cards[i].style.display = 'block';
-          shown = shown + 1;
-        } else {
-          cards[i].style.display = 'none';
-        }
-      }
-
-      var noResult = document.getElementById('noResult');
-      if (shown === 0) {
-        noResult.style.display = 'block';
-      } else {
-        noResult.style.display = 'none';
-      }
-    }
-
-    // 할인 전 가격과 판매 가격을 비교해서 할인율을 계산하는 함수
-    function showDiscount() {
-      var cards = document.querySelectorAll('.card');
-      for (var i = 0; i < cards.length; i++) {
-        // 1. 두 가격에서 숫자만 뽑아내기 ("18,000원" -> 18000)
-        var oldBox = cards[i].querySelector('.old-price');
-        var nowBox = cards[i].querySelector('.price');
-        var oldPrice = Number(oldBox.textContent.replace(/[^0-9]/g, ''));
-        var nowPrice = Number(nowBox.textContent.replace(/[^0-9]/g, ''));
-
-        // 2. 할인율 계산하기 (소수점은 반올림)
-        var rate = Math.round((oldPrice - nowPrice) / oldPrice * 100);
-
-        // 3. 가격 앞에 빨간 글씨로 넣기
-        var tag = document.createElement('span');
-        tag.className = 'discount';
-        tag.textContent = rate + '%';
-        oldBox.parentNode.insertBefore(tag, oldBox);
-      }
-    }
-
-    // 화면이 열릴 때 할인율을 자동으로 계산
-    showDiscount();
-
-    // 하트를 누르면 찜하기 켜고 끄는 함수
-    function toggleHeart(button) {
-      if (button.textContent === '🤍') {
-        button.textContent = '❤️';   // 찜한 상태
-      } else {
-        button.textContent = '🤍';   // 찜 해제
-      }
-      updateWishCount();
-    }
-
-    // 찜한 상품이 몇 개인지 세어서 맨 위에 보여주는 함수
-    function updateWishCount() {
-      var hearts = document.querySelectorAll('.heart');
-      var count = 0;
-      for (var i = 0; i < hearts.length; i++) {
-        if (hearts[i].textContent === '❤️') {
-          count = count + 1;
-        }
-      }
-      document.getElementById('wishNumber').textContent = count;
-    }
-
-    // ===== 장바구니 =====
-
-    // 담은 상품을 저장해두는 목록
-    var cart = [];
-
-    // 숫자에 쉼표 넣기 (12600 -> 12,600)
-    function won(number) {
-      return number.toLocaleString();
-    }
-
-    // "장바구니 담기" 버튼을 누르면 실행되는 함수
-    function addToCart(button) {
-      var card = button.closest('.card');
-      var name = card.querySelector('h3').textContent;
-      var price = Number(card.querySelector('.price').textContent.replace(/[^0-9]/g, ''));
-
-      // 이미 담은 상품이면 수량만 1 늘리기
-      for (var i = 0; i < cart.length; i++) {
-        if (cart[i].name === name) {
-          cart[i].count = cart[i].count + 1;
-          drawCart();
-          return;
-        }
-      }
-
-      // 처음 담는 상품이면 새로 넣기
-      cart.push({ name: name, price: price, count: 1 });
-      drawCart();
-    }
-
-    // 수량 바꾸기 (+1 또는 -1), 0이 되면 목록에서 빼기
-    function changeCount(index, amount) {
-      cart[index].count = cart[index].count + amount;
-      if (cart[index].count < 1) {
-        cart.splice(index, 1);
-      }
-      drawCart();
-    }
-
-    // 상품 하나 빼기
-    function removeItem(index) {
-      cart.splice(index, 1);
-      drawCart();
-    }
-
-    // 총 금액 계산하기
-    function getTotal() {
-      var total = 0;
-      for (var i = 0; i < cart.length; i++) {
-        total = total + cart[i].price * cart[i].count;
-      }
-      return total;
-    }
-
-    // 장바구니 화면 그리기
-    function drawCart() {
-      var list = document.getElementById('cartList');
-      var html = '';
-
-      for (var i = 0; i < cart.length; i++) {
-        var sum = cart[i].price * cart[i].count;
-        html = html +
-          '<div class="cart-item">' +
-            '<span class="cart-name">' + cart[i].name + '</span>' +
-            '<span class="cart-count">' +
-              '<button onclick="changeCount(' + i + ', -1)">-</button>' +
-              '<b>' + cart[i].count + '</b>' +
-              '<button onclick="changeCount(' + i + ', 1)">+</button>' +
-            '</span>' +
-            '<span class="cart-sum">' + won(sum) + '원</span>' +
-            '<button class="cart-del" onclick="removeItem(' + i + ')">✕</button>' +
-          '</div>';
-      }
-
-      list.innerHTML = html;
-
-      // 총 금액과 안내 문구 바꾸기
-      document.getElementById('cartTotal').textContent = won(getTotal());
-      if (cart.length === 0) {
-        document.getElementById('cartEmpty').style.display = 'block';
-      } else {
-        document.getElementById('cartEmpty').style.display = 'none';
-      }
-
-      // 맨 위 장바구니 개수 바꾸기
-      var totalCount = 0;
-      for (var j = 0; j < cart.length; j++) {
-        totalCount = totalCount + cart[j].count;
-      }
-      document.getElementById('cartNumber').textContent = totalCount;
-    }
-
-    // 주문하기 버튼
-    function order() {
-      if (cart.length === 0) {
-        alert('장바구니가 비어 있어요 🐾');
-        return;
-      }
-      alert('총 ' + won(getTotal()) + '원 주문이 접수되었습니다! 🎉');
-    }
-  </script>
+  for (var i = 0; i < allButtons.length; i++) {
+    allButtons[i].classList.remove("on");
+  }
+  clickedButton.classList.add("on");
+}
+</script>
 
 </body>
 </html>
