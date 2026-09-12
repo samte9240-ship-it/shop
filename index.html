@@ -70,11 +70,16 @@ body {
   padding: 12px 25px;
 }
 
-/* 돋보기 아이콘 */
+/* 돋보기 버튼 - 눌러도 검색됩니다 */
 .search-icon {
-  font-size: 16px;
+  background-color: transparent;
+  border: none;
+  padding: 0;
   margin-right: 6px;
+  font-size: 17px;
+  line-height: 1;
   vertical-align: middle;
+  cursor: pointer;
 }
 
 #search-input {
@@ -424,7 +429,7 @@ footer {
 
 <!-- 맨 위 검색창 -->
 <div class="search-bar">
-  <span class="search-icon">🔍</span>
+  <button class="search-icon" onclick="doSearch()" title="검색">🔍</button>
   <input type="text" id="search-input" oninput="searchProduct(this.value)" placeholder="상품 이름 검색 (예: 큐대)">
 </div>
 
@@ -687,6 +692,48 @@ var nowCategory = "전체";
 var nowKeyword = "";
 
 // 분류와 검색어를 함께 적용해서 보여줄 상품을 고릅니다.
+// 한글 초성 19개 (가나다 순)
+var CHOSUNG_LIST = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ",
+                    "ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+
+// 글자에서 초성만 뽑아냅니다.  예) "당구큐" -> "ㄷㄱㅋ"
+function getChosung(text) {
+  var result = "";
+
+  for (var i = 0; i < text.length; i++) {
+    var code = text.charCodeAt(i);
+
+    // 한글 한 글자인지 확인 (가 ~ 힣 사이)
+    if (code >= 44032 && code <= 55203) {
+      // 한글은 [초성 x 588 + 중성 x 28 + 종성] 규칙으로 만들어집니다.
+      result = result + CHOSUNG_LIST[Math.floor((code - 44032) / 588)];
+    } else {
+      result = result + text.charAt(i);   // 한글이 아니면 그대로
+    }
+  }
+
+  return result;
+}
+
+// 상품 이름이 검색어에 맞는지 확인합니다.
+function matchName(name, keyword) {
+  if (keyword === "") {
+    return true;
+  }
+
+  // 검색어가 초성만으로 되어 있으면 (예: ㄷㄱㅋ) 초성끼리 비교합니다.
+  var onlyChosung = /^[ㄱ-ㅎ\s]+$/.test(keyword);
+
+  if (onlyChosung) {
+    var a = getChosung(name).replace(/\s/g, "");
+    var b = keyword.replace(/\s/g, "");
+    return a.indexOf(b) !== -1;
+  }
+
+  // 그 외에는 이름 그대로 비교합니다.
+  return name.indexOf(keyword) !== -1;
+}
+
 function applyFilter() {
   var allCards = document.querySelectorAll(".card");
   var shownCount = 0;
@@ -697,8 +744,8 @@ function applyFilter() {
     // 조건 1 - 분류가 맞는가
     var okCategory = (nowCategory === "전체" || allCards[i].dataset.category === nowCategory);
 
-    // 조건 2 - 상품 이름에 검색어가 들어 있는가
-    var okKeyword = (nowKeyword === "" || name.indexOf(nowKeyword) !== -1);
+    // 조건 2 - 상품 이름이 검색어에 맞는가 (초성 검색도 됩니다)
+    var okKeyword = matchName(name, nowKeyword);
 
     if (okCategory && okKeyword) {
       allCards[i].style.display = "block";   // 보이기
@@ -721,6 +768,14 @@ function applyFilter() {
 function searchProduct(keyword) {
   nowKeyword = keyword.trim();
   applyFilter();
+}
+
+// 돋보기 버튼을 누르면 실행됩니다.
+// (글자를 칠 때도 자동으로 걸러지지만, 눌러서도 찾을 수 있습니다)
+function doSearch() {
+  var box = document.getElementById("search-input");
+  searchProduct(box.value);
+  box.focus();
 }
 
 // 카테고리 버튼을 누르면 실행됩니다.
