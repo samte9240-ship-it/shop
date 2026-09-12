@@ -63,23 +63,31 @@ body {
   background-repeat: no-repeat;
 }
 
-/* ===== 맨 위 검색창 ===== */
+/* ===== 맨 위 검색창 (오른쪽 끝) ===== */
 .search-bar {
   background-color: rgba(255, 255, 255, 0.85);
-  text-align: center;
-  padding: 14px 20px;
+  text-align: right;
+  padding: 12px 25px;
+}
+
+/* 돋보기 아이콘 */
+.search-icon {
+  font-size: 16px;
+  margin-right: 6px;
+  vertical-align: middle;
 }
 
 #search-input {
-  width: 100%;
-  max-width: 440px;
-  padding: 10px 18px;
-  font-size: 15px;
+  width: 270px;
+  max-width: 70%;
+  padding: 9px 16px;
+  font-size: 14px;
   font-family: inherit;
   color: #333333;
   border: 2px solid #E2789C;
   border-radius: 20px;
   background-color: #FFFFFF;
+  vertical-align: middle;
 }
 
 /* 검색 결과가 없을 때 나오는 안내 (평소에는 숨김) */
@@ -416,8 +424,8 @@ footer {
 
 <!-- 맨 위 검색창 -->
 <div class="search-bar">
-  <input type="text" id="search-input" oninput="searchProduct(this.value)"
-         placeholder="찾으시는 상품을 입력하세요 (예: 큐대, 장갑, 초크)">
+  <span class="search-icon">🔍</span>
+  <input type="text" id="search-input" oninput="searchProduct(this.value)" placeholder="상품 이름 검색 (예: 큐대)">
 </div>
 
 <!-- 쇼핑몰 이름 -->
