@@ -143,27 +143,31 @@ header p {
   font-size: 15px;
 }
 
-/* 찜하기 하트 버튼 (카드 오른쪽 아래) */
+/* 찜하기 하트 (카드 오른쪽 아래) - 배경 없이 하트만 */
 .heart {
   position: absolute;
-  bottom: 25px;
-  right: 25px;
-  width: 36px;
-  height: 36px;
+  bottom: 22px;
+  right: 22px;
+  width: 34px;
+  height: 34px;
   padding: 0;
-  border-radius: 50%;
   border: none;
-  background-color: #F5D5E0;
-  color: #999999;
-  font-size: 20px;
+  background-color: transparent;
+  color: #C9C9C9;
+  font-size: 25px;
   line-height: 1;
   cursor: pointer;
+  transition: color 0.2s, transform 0.1s;
 }
 
-/* 눌린 하트 - 빨갛게 진해집니다 */
+/* 찜한 하트 - 빨갛게 */
 .heart.on {
-  background-color: #E01B24;
-  color: #FFFFFF;
+  color: #E01B24;
+}
+
+/* 마우스를 올리면 살짝 커집니다 */
+.heart:hover {
+  transform: scale(1.2);
 }
 
 /* ===== 메뉴 4개 ===== */
